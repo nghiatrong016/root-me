@@ -1,36 +1,37 @@
 # Insecure Code Management
 Dùng dirseach thì mình tìm thấy file .git
 
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/0b70f809-84eb-47d1-bd8e-be470fe6cc83)
 
-![alt text](image-1.png)
+![image-1](https://github.com/user-attachments/assets/bb3d1444-457d-428a-a6e2-893c7c829edd)
 
 Dùng wget -r `<url>` để tải src về
 
 Use git show to check for git commit change
-![alt text](image-2.png)
+![image-2](https://github.com/user-attachments/assets/ac9bb50b-0349-4afe-a601-08f5f564f0d7)
 
 # files install 
 
-![alt text](image-4.png)
+![image-4](https://github.com/user-attachments/assets/303b0e4e-717d-49c7-abd5-1e69fd8a6d97)
 
-![alt text](image-5.png)
+![image-5](https://github.com/user-attachments/assets/2e3bfb49-fff9-443b-ac2e-a1bdf820061e)
 
-![alt text](image-6.png)
+![image-6](https://github.com/user-attachments/assets/5b5ce823-80de-455d-9b17-83a083c613fb)
 
-![alt text](image-3.png)
+![image-3](https://github.com/user-attachments/assets/28248483-2f92-4bc1-a858-cbf90f62549f)
 
 # file upload -mime type
 
-![alt text](image-8.png)
+![image-8](https://github.com/user-attachments/assets/f175642f-831c-47d1-b268-cf27ad09fca3)
 
-![alt text](image-7.png)
+
+![image-7](https://github.com/user-attachments/assets/e7d1b12f-4abe-43dc-bb57-5689a95c8057)
 
 # file upload double extenions
 
 Dùng a.php.png
 
-![alt text](image-9.png)
+![image-9](https://github.com/user-attachments/assets/019c2f0e-21ee-4b3d-af10-254dee93dc97)
 
 # HTTP - Improper redirect
 
@@ -38,7 +39,7 @@ Truy cập vào thẳng index xem trong Burp sẽ thấy được
 
 Có vẻ như nếu redirect mà không exit thì code ở phía dưới nếu có vẫn sẽ được thực thi
 
-![alt text](image-10.png)
+![image-10](https://github.com/user-attachments/assets/f6c528a0-1560-4ff5-8f58-2b5610f5268d)
 
 # Nginx - Alias Misconfiguration
 
@@ -76,39 +77,39 @@ location /i {
 
 Đầu tiên khi vào link challenge thì không có gì đặc biệt, tuy nhiên khi mình vào Burp để xem request thì thấy 1 file main.js, mà nó còn show code cho mình nữa.
 
-![alt text](image-11.png)
+![image-11](https://github.com/user-attachments/assets/e3f4bd73-ae40-4fc5-ab51-40affeb0b78c)
 
 Với kiến thức đã đọc được ở trên thì mình thử tấn công, đầu tiên hiện tại file mình muốn đọc không phải là `main.js` nữa, có thể là một file nào đó khác và với đặc thù của path traversal thì cứ `../` tới chết.
 
-![alt text](image-12.png)
+![image-12](https://github.com/user-attachments/assets/e2d3f2e0-295e-4e60-94cf-618927c02fbe)
 
 Có vẻ mình đã đúng hướng.
 
-![alt text](image-13.png)
+![image-13](https://github.com/user-attachments/assets/da2966c7-d188-41f8-8909-f9e4cb133e6a)
 
 Tới đây thì có hint luôn thêm `/assets` vào.
 
-![alt text](image-14.png)
+![image-14](https://github.com/user-attachments/assets/51dcf10e-72ef-4495-ad3e-d8786e400192)
 
 Tới đây thì thấy cả folder ngoài cùng rồi và cả flag.
 
-![alt text](image-15.png)
+![image-15](https://github.com/user-attachments/assets/4faa3431-1851-46e9-82a8-106e20f26f70)
 
 # Verb tampering
 
 Bài này thì mình thấy khác là chơi chữ tampering có nghĩa là giả mạo, chỉ cần thay đổi http method trừ get và post là sẽ đọc được flag
 
-![alt text](image-16.png)
+![image-16](https://github.com/user-attachments/assets/2a4c0d6e-7d8d-433f-b830-a997cdd56ed6)
 
 # CRLF
 
-![alt text](image-17.png)
+![image-17](https://github.com/user-attachments/assets/2f3b0cb9-e02b-43a9-921e-0cfe16cfdda6)
 
 # Flask - Unsecure session
 
 Bài này thì mình nhận được một jwt hơi lạ
 
-![alt text](image-18.png)
+![image-18](https://github.com/user-attachments/assets/6e15c0c0-0993-43f7-8ee4-0531c9f3bce8)
 
 Bình thường thì một jwt token sẽ gồm
 
@@ -122,21 +123,21 @@ Tuy nhiên với bài này thì cái payload lại nằm ở đầu, sau đó m�
 
 **Command:**`flask-unsign --wordlist rockyou.txt --unsign --cookie 'eyJhZG1pbiI6ImZhbHNlIiwidXNlcm5hbWUiOiJndWVzdCJ9.Z7FU8g.3SnSsOXWN4smUAbxs-Ez9oYz4nM' --no-literal-eval`
 
-![alt text](image-19.png)
+![image-19](https://github.com/user-attachments/assets/244ed7aa-6eef-4871-965b-4cc536ba9285)
 
 Sau đó thì thay payload của mình vào rồi tạo token lại thôi
 
 **Command**`flask-unsign --sign --cookie '{"admin": "true", "username" : "admin"}' --secret 's3cr3t'`
-![alt text](image-21.png)
+![image-21](https://github.com/user-attachments/assets/361839d4-07e2-40d9-88d9-30fb3bb8a938)
 
-![alt text](image-20.png)
+![image-20](https://github.com/user-attachments/assets/af126433-9476-4655-bfe8-35fbce02530d)
 
 # GraphQL instropection
 Sau một hồi tìm hiểu về GraphQL thì mình thấy trang [graphql-voyager](https://graphql-kit.com/graphql-voyager/)
 
 Trang này chủ yếu dùng dữ liệu trả về của GraphQL query để vẽ biểu đồ quan hệ
 
-![alt text](image-22.png)
+![image-22](https://github.com/user-attachments/assets/275e4f74-00dd-4a9c-86a7-555855617990)
 
 Sau đó thì thấy cái này mình dùng thử thì được query như sau:
 ```json
@@ -145,11 +146,11 @@ Sau đó thì thấy cái này mình dùng thử thì được query như sau:
 
 Sau khi dùng query trên thì mình nhận về 1 chuỗi data json dài vcl
 
-![alt text](image-24.png)
+![image-24](https://github.com/user-attachments/assets/a517f728-9987-4275-980a-f0ac8750241d)
 
 Nhưng xài [graphql-voyager](https://graphql-kit.com/graphql-voyager/) thì nhìn cũng dễ hiểu rồi
 
-![alt text](image-23.png)
+![image-23](https://github.com/user-attachments/assets/f7bd507f-2d33-4632-b0d0-7bd92b387b67)
 
 Sau đó dễ dàng nhận ra là bảng `IAmNotHere` chính là nơi ta cần khai thác
 
@@ -172,15 +173,15 @@ Sau đó dùng [datafetcher](https://datafetcher.com/graphql-json-body-converter
 }
 ```
 
-![alt text](image-25.png)
+![image-25](https://github.com/user-attachments/assets/29208450-4f57-44e5-9132-de9aec90bb5d)
 
 OK từ đây ta biết được dòng very_long_id cần phải truyền giá trị vào
 
-![alt text](image-26.png)
+![image-26](https://github.com/user-attachments/assets/93701025-9eb4-4245-afae-e3e27f01956b)
 
 Vậy từ đây ta biết được rằng có lẽ flag được giấu trong các id này, bây giờ một là dùng tay, hai là intruder thôi
 
-![alt text](image-27.png)
+![image-27](https://github.com/user-attachments/assets/6fba6865-bb69-4d90-8872-b3eb3802c35b)
 
 Sau khi dùng intruder để dò thử thì ở id 17 ta sẽ lấy được flag
 
@@ -189,34 +190,34 @@ Sau khi dùng intruder để dò thử thì ở id 17 ta sẽ lấy được fla
 
 Bài này lúc nào mình thấy không có gì để tương tác trên web lắm vào đọc src thì thấy cái này. Khi dùng chức năng save mail thì nó đòi mình là admin
 
-![alt text](image-28.png)
+![image-28](https://github.com/user-attachments/assets/2d148b44-3534-47dc-91c6-9f4af1b28661)
 
 Nên mình vào cookie editor sửa lại rồi save mail lần nữa là được
 
-![alt text](image-29.png)
+![image-29](https://github.com/user-attachments/assets/d2715bf0-51af-435f-80c1-7c909df3302f)
 
-![alt text](image-30.png)
+![image-30](https://github.com/user-attachments/assets/dcf1fdf1-4bf2-4e55-a164-3e3ea60f0de3)
 
 # JWT Introduction
 
 Bài này khá đơn giản, chỉ cần thay username và alg là lấy được flag
 
-![alt text](image-31.png)
+![image-31](https://github.com/user-attachments/assets/beaa654e-8d7a-4d0a-99f2-10e0a3bf2639)
 
 # Directory Traversal 
 
-![alt text](image-32.png)
+![image-32](https://github.com/user-attachments/assets/e8c3d4e7-081c-4e18-8aea-321d56c873fb)
 
 vào trang web có param galerie để query tới các ảnh, nói chung bài này mình chỉ thử sai thôi chứ cũng không có idea gì.
 
-![alt text](image-33.png)
+![image-33](https://github.com/user-attachments/assets/b899cae3-4196-44e4-be57-ba89ac6222ed)
 
 Có giá trị `86hwnX2r` thì mình thử quăng vô thôi 
-![alt text](image-34.png)
+![image-34](https://github.com/user-attachments/assets/9430cb93-6db6-4b5f-9e36-7820ab7113fc)
 
-![alt text](image-35.png)
+![image-35](https://github.com/user-attachments/assets/fa17b93e-607f-457c-b53d-a2766a1906f9)
 
-![alt text](image-36.png)
+![image-36](https://github.com/user-attachments/assets/a9e7b4a2-f23a-4ef1-aded-14fb53f98c49)
 
 # File upload - Null byte
 
@@ -320,14 +321,14 @@ curl -k -x http://127.0.0.1:8080 -X POST "http://challenge01.root-me.org/web-ser
 
 Hoặc Burp
 
-![alt text](image-37.png)
+![image-37](https://github.com/user-attachments/assets/47855ec9-18fc-4951-93e7-a27ab2bc5aa7)
 
 Burp có chức năng đổi từ `GET` thành `POST` request sau đó chỉ cần đổi content type và `POST` data là được.
 
 Sau khi dùng token thì đúng như khi phân tích code nó đã expire
-![alt text](image-38.png)
+![image-38](https://github.com/user-attachments/assets/2f142721-5904-4d96-b93b-e2ff9486749d)
 
-![alt text](image-39.png)
+![image-39](https://github.com/user-attachments/assets/2064e152-f2ab-4efc-b991-4f95ae5f9812)
 
 Sau đó mình thêm dấu = đằng sau thì đã lấy được flag
 
@@ -344,6 +345,6 @@ import jwt; print(jwt.encode({"role": "admin"}, "lol", algorithm="HS512", header
 
 ```
 
-![alt text](image-40.png)
+![image-40](https://github.com/user-attachments/assets/e6b53195-7dd8-4822-8aa9-6c919a96c112)
 
-![alt text](image-41.png)
+![image-41](https://github.com/user-attachments/assets/fe297c20-e7df-4558-941f-bac5e6e46a0c)
