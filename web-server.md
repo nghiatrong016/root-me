@@ -348,3 +348,120 @@ import jwt; print(jwt.encode({"role": "admin"}, "lol", algorithm="HS512", header
 ![image-40](https://github.com/user-attachments/assets/e6b53195-7dd8-4822-8aa9-6c919a96c112)
 
 ![image-41](https://github.com/user-attachments/assets/fe297c20-e7df-4558-941f-bac5e6e46a0c)
+
+# JWT - Unsecure File Signature
+
+Ở bài này đầu tiên dạo 1 vòng quanh web thì phát hiện endpoint này
+
+![image-42](https://github.com/user-attachments/assets/4ddb80a4-89f1-4cd6-85bd-b497a27b5560)
+
+Trong chuỗi jwt này thì có thêm 2 giá trị mới đó là kid, iat 
+
+![image-43](https://github.com/user-attachments/assets/3fdbf7f6-14a2-44af-bcc9-f5bf3fbc1a22)
+
+Sau khi tìm hiểu thì `iat - issued at` và `kid - key id`.
+- iat để xác định thời gian token được kí 
+- [kid](https://www.rfc-editor.org/rfc/rfc7515#section-4.1.4) để xác định là hệ thống sẽ dùng key nào để kí trong trường hợp có nhiều key
+
+Với cách sử dụng của kid thì trong [Hacktricks](https://book.hacktricks.wiki/en/pentesting-web/hacking-jwt-json-web-tokens.html?highlight=kid#kid-issues-overview) có đề cập tới bị các vấn đề như path traversal, os command injeciton, SQLi,...
+
+![image-44](https://github.com/user-attachments/assets/62446960-678e-4303-bf1d-691aa2812908)
+
+Đầu tiên mình thử path traversal có vẻ dính rồi mà bị filter
+
+![image-45](https://github.com/user-attachments/assets/13a2ccb0-29f7-4eb9-aa6b-83cb2fc964f5)
+
+Tới đây thì có vẻ bypass được rồi nhưng mà mình thử lùi về tiếp thì bị báo không đúng signature. Không lẻ giờ đi bruteforce key
+
+![image-46](https://github.com/user-attachments/assets/78ddc1a5-84b3-4f1e-b5c3-eb2b01ce8ad1)
+
+Cuối cùng thì ChatGPT lại là vị cứu tinh thật ra mình tưởng chỉ cần trỏ với null thì đã là rỗng rồi nhưng mà phải kí bằng key rỗng nữa.
+
+![image-47](https://github.com/user-attachments/assets/3d879be6-b2ba-473a-a7de-230e95a5e1a0)
+
+Về cái này thì có thể dùng jwt tool hay jwt editor trong Burp cũng được
+
+    python3 jwt_tool.py <JWT> -I -hc kid -hv "../../dev/null" -S hs256 -p ""
+
+![image-48](https://github.com/user-attachments/assets/73c2f645-49e4-4511-b123-9e17732d187c)
+
+Kí xong rồi send request lại thôi
+
+![image-49](https://github.com/user-attachments/assets/adcd26cc-ae1c-4f95-b9d5-3d796c2dfca2)
+
+# PHP - assert
+
+[Tài liệu tham khảo](https://www.linkedin.com/pulse/php-assert-vulnerable-local-file-inclusion-mohamed-fakroud)
+
+Sau khi đọc xong và thử với trang của đề bài thì mình đoán được đoạn code như sau
+
+```php
+assert("strpos('includes/'. $page, '..') === false") or die("Detected hacking attempt!");
+```
+
+Nhưng mà nối chuỗi thì mình hoàn toàn kiểm soát được bây giờ chỉ là escape ra như nào thôi
+
+Sau khi mò một hồi thì payload của mình như này
+
+![image-51](https://github.com/user-attachments/assets/d0a78c45-8248-4898-9969-b1a63eec07c6)
+
+```html
+?page=', '') || readfile('.passwd') ; //
+```
+```php
+strpos('includes/','');
+```
+
+Đầu tiên mình sẽ đóng hàm `strpos` lại và cho nó so sánh với chuỗi rỗng, sau đó dùng toán tử logic để nối thêm như trong blog thôi. Trong blog dùng && nhưng mà nếu ta escape như vậy thì đoạn code sau sẽ không chạy
+
+![image-52](https://github.com/user-attachments/assets/e1136946-9b64-4492-b5ec-3de0c07e1d11)
+
+Bởi đằng trước đã false rồi còn `and` thêm nữa cũng false thôi, còn đằng sau thì bạn xài hàm gì cx được chỉ cần đọc được file.
+
+# PHP - Apache configuration
+
+Bài này khá rõ ràng rồi up đè file .htaccess để chạy code php thôi
+
+# PHP - Filters
+
+[php-filters](https://whitehatinstitute.com/local-file-inclusion-using-php-filter-base64-encoding/)
+
+Bài này chủ yếu xài wrapper `php://` để đọc file thôi
+
+![image-53](https://github.com/user-attachments/assets/5c424673-5d87-47c8-ab34-f89cfadfdcd4)
+
+Giả sử như ở đây mình đọc file `login.php` thì chỉ cần decode ra là đọc được
+
+![image-54](https://github.com/user-attachments/assets/eb7185ed-3741-46b6-8c30-0bd38e62e0de)
+
+Tới đây có vẻ chỉ cần đọc file config là được
+
+![image-55](https://github.com/user-attachments/assets/151beb39-ea7b-4a0d-b931-86f78cbee147)
+
+# PHP - register globals
+
+Bài này nhìn tên đã biết là về register_globals, về cơ bản nếu bật cái này lên thì tất cả user input sẽ trở thành biến toàn cục
+=> Nếu biết tên biến trong code thì sẽ ghi đè được luôn
+
+Cơ bản thì bài này mình chả biết cái biến đó tên gì đọc được [bài](https://stackoverflow.com/questions/21368051/register-globals-exploit-session-array) này mình thử cái ăn
+Nói chung khá rùa chả học được gì lắm
+
+![image-56](https://github.com/user-attachments/assets/c8ca263f-25be-4581-999d-74baaa3e6654)
+
+Uầy giải xong rồi mới đọc là có backup.
+
+![image-57](https://github.com/user-attachments/assets/4fec2943-a224-46df-937e-13476e9bc405)
+
+Về ý tưởng thì cài file này y chang như bài viết mình đọc.
+
+# PHP - remote xdebug
+
+[Tham khảo](https://bugs.php.net/bug.php?id=76149)
+# Python - Server-side Template Injection Introduction
+
+Bài này thì là ssti đơn giản thôi
+
+![image-58](https://github.com/user-attachments/assets/d6f7e837-bf01-4019-8a29-14cc2092ce04)
+
+{{ self.__init__.__globals__.__builtins__.__import__('os').popen('cat .passwd').read().replace("\n", " ") }}
+
